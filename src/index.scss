@@ -11,6 +11,7 @@ body {
   --main-container-bg: #fff;
   --container-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   --text-color: #00071d;
+  --text-hover-color: #fff;
 }
 
 body.dark {
@@ -19,6 +20,7 @@ body.dark {
   --secondary-bg: #36415e;
   --main-container-bg: #131c31;
   --text-color: #fff;
+  --text-hover-color: #fff;
   --tooltip-bg: #251d33;
   --container-shadow: rgba( #131c31, 0.2) 0px 7px 29px 0px;
 }
@@ -34,3 +36,14 @@ body {
   background-color: var(--main-bg);
   transition: .3s ease-in-out;
 } 
+
+a{
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.background{
+  display: flex;
+  flex-direction: column;
+  margin-left: 110px;
+}
