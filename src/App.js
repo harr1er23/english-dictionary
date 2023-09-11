@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import styles from "./index.scss";
 
@@ -20,6 +21,22 @@ function App() {
       {isAuth ? (
         <>
           <SideBar />
+          <Toaster
+        toastOptions={{
+          success: {
+            style: {
+              background: "var(--success-toast)",
+              color: "white",
+            },
+          },
+          error: {
+            style: {
+              background: "var(--error-toast)",
+              color: "white",
+            },
+          },
+        }}
+      />
           <div className='background'>
             <Routes>
               <Route path="/dictionary" element={<Dictionary />}></Route>

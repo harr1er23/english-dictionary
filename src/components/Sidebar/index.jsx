@@ -77,7 +77,7 @@ const Sidebar = () => {
       <div className="sidebar-wrapper">
         <div className="sidebar-themeContainer">
           <label
-            labelFor="theme-toggle"
+            labelfor="theme-toggle"
             className={`sidebar-themeLabel${isDarkMode ? " switched" : ""}`}
           >
             <input
