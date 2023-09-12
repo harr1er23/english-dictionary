@@ -1,0 +1,71 @@
+{
+  "settings": [
+    {
+      "id_user": 1,
+      "options": [
+        {
+          "theme": "light",
+          "wordQuantity": 5,
+          "trainShow": "",
+          "tags": ""
+        }
+      ]
+    },
+    {
+      "id_user": 2,
+      "options": []
+    }
+  ],
+  "dictionary": [
+    {
+      "userId": 1,
+      "id": 1,
+      "word": "word",
+      "transcription": "[wɜːd]",
+      "translate": [
+        "слово",
+        "словечко",
+        "известие"
+      ],
+      "tags": [
+        {
+          "tagId": 1
+        },
+        {
+          "tagId": 2
+        }
+      ]
+    },
+    {
+      "userId": 1,
+      "id": 2,
+      "word": "test",
+      "transcription": "[test]",
+      "translate": [
+        "тест",
+        "испытание",
+        "проверка"
+      ],
+      "tags": [
+        {
+          "tagId": 2
+        }
+      ]
+    },
+    {
+      "userId": 1,
+      "id": 3,
+      "word": "Asshole",
+      "transcription": "",
+      "translate": "Мудак",
+      "selectTagArr": []
+    }
+  ],
+  "tags": [
+    {
+      "userId": 1,
+      "id": 1,
+      "tagName": "Алашаг"
+    }
+  ]
+}

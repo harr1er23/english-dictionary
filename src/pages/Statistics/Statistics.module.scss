@@ -1,0 +1,26 @@
+.background{
+    display:flex;
+    flex-wrap: wrap;
+    padding: 15px;
+    color: var(--text-color);
+
+    .linerGistogram{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30%;
+        background-color: var(--main-container-bg);
+        border-radius: 10px;
+        font-size: 12px;
+        margin: 0 10px;
+    }
+    
+    .radar{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20%;
+        background-color: var(--main-container-bg);
+        border-radius: 10px;
+    }
+}

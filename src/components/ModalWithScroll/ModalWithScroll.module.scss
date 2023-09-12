@@ -1,0 +1,46 @@
+.modalContent{
+    background-color: var(--main-container-bg);
+    color: var(--tertiary-bg);
+    .modalHeader{
+        border-bottom: 0;
+    }
+
+    .presetsBlockBackground{
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &::-webkit-scrollbar {
+            // height: 0;
+        }
+
+        .presetBackground{
+            padding: 10px 15px;
+            margin: 5px 30px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            border: 1px solid var(--secondary-bg);
+            cursor: pointer;
+
+            &:hover{
+                border: 1px solid var(--secondary-bg);
+                background-color: var(--secondary-bg);
+                color: var(--text-hover-color);
+                p{
+                    color: var(--text-hover-color);
+                }
+
+            }
+
+            h4{
+
+            }
+
+            p{
+
+            }
+        }
+    }
+}
