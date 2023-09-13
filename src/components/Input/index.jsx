@@ -10,9 +10,10 @@ const Input = ({
   onKeyDownFunction,
   svgSrc,
   onClickFunction,
+  disabled=false
 }) => {
   return (
-    <div className="mb-3">
+    <div className={styles.inputBlock}>
       <input
         value={value}
         onChange={(e) => onChangeFunction(e.target.value)}
@@ -20,6 +21,7 @@ const Input = ({
         onKeyDown={onKeyDownFunction}
         className={styles.input}
         placeholder={textPlaceholder}
+        styles={{pointerEvents: disabled ? 'none' : ''}}
       />
       {svgSrc ? <div className={styles.soundImg}>{svgSrc}</div> : ''}
     </div>

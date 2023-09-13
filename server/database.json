@@ -16,56 +16,328 @@
       "options": []
     }
   ],
-  "dictionary": [
+  "dictionary": [],
+  "usersTags": [
     {
       "userId": 1,
       "id": 1,
-      "word": "word",
-      "transcription": "[wɜːd]",
-      "translate": [
-        "слово",
-        "словечко",
-        "известие"
-      ],
-      "tags": [
-        {
-          "tagId": 1
-        },
-        {
-          "tagId": 2
-        }
-      ]
-    },
-    {
-      "userId": 1,
-      "id": 2,
-      "word": "test",
-      "transcription": "[test]",
-      "translate": [
-        "тест",
-        "испытание",
-        "проверка"
-      ],
-      "tags": [
-        {
-          "tagId": 2
-        }
-      ]
-    },
-    {
-      "userId": 1,
-      "id": 3,
-      "word": "Asshole",
-      "transcription": "",
-      "translate": "Мудак",
-      "selectTagArr": []
+      "tagName": "А1"
     }
   ],
-  "tags": [
+  "presets": [
     {
-      "userId": 1,
-      "id": 1,
-      "tagName": "Алашаг"
+      "presetId": 1,
+      "presetName": "Овощи",
+      "words": [
+        {
+          "presetWordId": 1,
+          "word": "carrot",
+          "transcription": "[ˈkærət]",
+          "translate": [
+            "морковь",
+            "морковный",
+            "приманка"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        },
+        {
+          "presetWordId": 2,
+          "word": "celery",
+          "transcription": "[ˈselərɪ]",
+          "translate": [
+            "сельдерей"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        },
+        {
+          "presetWordId": 3,
+          "word": "cucumber",
+          "transcription": "[ˈkjuːkʌmbə]",
+          "translate": [
+            "огурец"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        },
+        {
+          "presetWordId": 4,
+          "word": "garlic",
+          "transcription": "[ˈgɑːlɪk]",
+          "translate": [
+            "чеснок",
+            "чесночный"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        },
+        {
+          "presetWordId": 5,
+          "word": "green beans",
+          "transcription": "[griːn biːnz]",
+          "translate": [
+            "зеленый боб",
+            "зеленая фасоль"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        },
+        {
+          "presetWordId": 6,
+          "word": "lettuce",
+          "transcription": "[ˈletɪs]",
+          "translate": [
+            "салат",
+            "салат латук"
+          ],
+          "tags": [
+            "Овощи"
+          ]
+        }
+      ]
+    },
+    {
+      "presetId": 2,
+      "presetName": "Фрукты",
+      "words": [
+        {
+          "presetWordId": 19,
+          "word": "apricot",
+          "transcription": "[ˈeɪprɪkɒt]",
+          "translate": [
+            "абрикос",
+            "абрикосовый",
+            "абрикосовое дерево"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 20,
+          "word": "avocado",
+          "transcription": "[ævəˈkɑːdəʊ]",
+          "translate": [
+            "авокадо"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 21,
+          "word": "banana",
+          "transcription": "[bəˈnɑːnə]",
+          "translate": [
+            "банан"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 22,
+          "word": "cherry",
+          "transcription": "[ˈʧerɪ]",
+          "translate": [
+            "вишневый",
+            "вишня",
+            "черешня"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 23,
+          "word": "grapes",
+          "transcription": "[greɪps]",
+          "translate": [
+            "виноград",
+            "ягоды винограда"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 24,
+          "word": "kiwi",
+          "transcription": "[ˈkiːwiː]",
+          "translate": [
+            "киви",
+            "новозеландский доллар"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 25,
+          "word": "lemon",
+          "transcription": "[ˈlemən]",
+          "translate": [
+            "лимон",
+            "лимонный",
+            "приправлять лимоном"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        },
+        {
+          "presetWordId": 26,
+          "word": "melon",
+          "transcription": "[ˈmelən]",
+          "translate": [
+            "дыня",
+            "бахча"
+          ],
+          "tags": [
+            "Фрукты"
+          ]
+        }
+      ]
+    },
+    {
+      "presetId": 3,
+      "presetName": "Цвета",
+      "words": [
+        {
+          "presetWordId": 36,
+          "word": "black",
+          "transcription": "[blæk]",
+          "translate": [
+            "черный",
+            "грязный",
+            "злой"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 37,
+          "word": "blue",
+          "transcription": "[bluː]",
+          "translate": [
+            "синий",
+            "голубой",
+            "лазурный"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 38,
+          "word": "brown",
+          "transcription": "[braʊn]",
+          "translate": [
+            "коричневый",
+            "смуглый",
+            "бурый"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 39,
+          "word": "crimson",
+          "transcription": "[krɪmzn]",
+          "translate": [
+            "малиновый",
+            "кровавый",
+            "темно-красный"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 40,
+          "word": "gray",
+          "transcription": "[greɪ]",
+          "translate": [
+            "серый",
+            "седой",
+            "сивый"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 41,
+          "word": "green",
+          "transcription": "[griːn]",
+          "translate": [
+            "зеленый",
+            "сырой",
+            "чистый"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 42,
+          "word": "orange",
+          "transcription": "[ˈɒrɪnʤ]",
+          "translate": [
+            "оранжевый",
+            "апельсин",
+            "рыжий"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 43,
+          "word": "indigo",
+          "transcription": "[ˈɪndɪgəʊ]",
+          "translate": [
+            "индиго"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 44,
+          "word": "pink",
+          "transcription": "[pɪŋk]",
+          "translate": [
+            "розовый",
+            "гвоздика",
+            "румяный"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        },
+        {
+          "presetWordId": 45,
+          "word": "red",
+          "transcription": "[red]",
+          "translate": [
+            "красный",
+            "алый",
+            "краснокожий"
+          ],
+          "tags": [
+            "Цвета"
+          ]
+        }
+      ]
     }
   ]
 }

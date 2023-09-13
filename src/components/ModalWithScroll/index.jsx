@@ -1,4 +1,6 @@
+
 import React from "react";
+import Button from "../Button";
 
 import styles from "./ModalWithScroll.module.scss";
 
@@ -35,6 +37,14 @@ const ModalWithScroll = ({ wordPresets, headerText }) => {
                 </div>
               ))}
             </div>
+          </div>
+          <div className={`modal-footer${" " + styles.modalFooter}`}>
+          <Button
+              type={"button"}
+              toggle="modal"
+              target="#staticBackdrop"
+              text={"Вернуться"}
+            />
           </div>
         </div>
       </div>
