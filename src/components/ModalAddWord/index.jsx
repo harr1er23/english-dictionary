@@ -27,7 +27,6 @@ const ModalAddWord = ({ words, setWords }) => {
 
   //массив введенных переводов для слова
   const [translatesWord, setTranslatesWord] = React.useState([]);
-  console.log(translatesWord)
 
   //массив тегов получаемый из бд
   const [tags, setTags] = React.useState([]); //подгружаются готовые теги + есть возможность добавить новый тег
@@ -49,46 +48,97 @@ const ModalAddWord = ({ words, setWords }) => {
   const [example, setExample] = React.useState("");
 
   //массив Добавленных примеров для слова
-  const [examples, setExamples] = React.useState([
-    "Первый пример предложения",
-    "второй пример предложения",
-  ]);
+  const [examples, setExamples] = React.useState([]);
 
   //функции для функционала word speech
   const { speak, voices } = useSpeechSynthesis();
   let voice = voices[104];
 
-  const addVariableToArr = (arrayMethod, variable, clearArrMethod) => {
-    arrayMethod(prev => [...prev, variable])
-    clearArrMethod('');
-  }
-
-  const removeVariableFromArr = (arrayMethod, variable) => {
-    arrayMethod(prev => prev.find((obj) => obj.id !== variable.id))
-  }
-
-
-  //функция добавления нового тага по вводу его в инпуте
-  const addNewTag = (event) => {
-    if (event.key === "Enter") {
-      const { data } = axios.post(process.env.REACT_APP_TAGS_KEY, {
-        userId: id,
-        id: tags.length + 1,
-        tagName: tagInputValue,
-      });
-
-      setSelectTagArr((prev) => [
-        ...prev,
-        {
-          userId: id,
-          id: tags.length + 1,
-          tagName: tagInputValue,
-        },
-      ]);
-
-      setTagInputValue("");
+  //функция для добавления данных в массив 
+  const addVariableToArr = (arrayMethod, variable, clearInputMethod, array) => {
+    if (variable.length !== 0) {
+        if(typeof variable === "object"){
+            arrayMethod((prev) => [
+              ...prev,
+              variable
+            ]);
+        }else{
+          if(array.length !== 0 && array.find((obj) => obj.toLowerCase() === variable.toLowerCase())
+          ){
+            clearInputMethod('');
+          }else{
+            arrayMethod((prev) => [
+              ...prev,
+              variable
+            ]);
+          }
+        }
+        if (clearInputMethod !== null) {
+          clearInputMethod("");
+        }
+    } else {
+      toast.error("Заполните поле");
     }
   };
+
+  //функция замены переменной между двумя массивами
+  const replaceVariableInArr = (
+    arrayAddMethod,
+    addedVariable,
+    arrayForLength,
+    arrayRemoveMethod
+  ) => {
+    addVariableToArr(arrayAddMethod, addedVariable, null, arrayForLength);
+    removeVariableFromArr(arrayRemoveMethod, addedVariable);
+  };
+
+  //функция удаления переменной из массива
+  const removeVariableFromArr = (arrayMethod, variable) => {
+    if(typeof variable === "object"){
+      arrayMethod((prev) => prev.filter((obj) => obj.id !== variable.id));
+    }else{
+      arrayMethod((prev) => prev.filter((obj) => obj.toLowerCase() !== variable.toLowerCase()));
+    }
+  };
+
+  //функция для добавления переменной в массив при нажатии на энтер
+  const onPressEnter = (
+    event,
+    arrayMethod,
+    variable,
+    clearInputMethod,
+    array
+  ) => {
+    if (event.key === "Enter") {
+      addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+    }
+  };
+
+  const addTagInBd = async (arrayMethod, variable, clearInputMethod, array) => {
+    if((array.length !== 0 && array.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase())) || (tags.length !== 0 && tags.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase()))){
+      clearInputMethod('');
+    }else{
+      await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
+      addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+    }
+  }
+
+  const addTagInBdOnEnter = async (event, arrayMethod, variable, clearInputMethod, array) => {
+    if (event.key === "Enter") {
+      if((array.length !== 0 && array.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase())) || (tags.length !== 0 && tags.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase()))){
+        clearInputMethod('');
+      }else{
+        await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
+        addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+      }
+    }
+  }
+
+  const editExample = (variable, arrayRemoveMethod) => {
+    setExample('');
+    setExample(variable);
+    removeVariableFromArr(arrayRemoveMethod, variable);
+  }
 
   //функция добавления слова в словарь
   const addWordToDictionary = async () => {
@@ -126,21 +176,6 @@ const ModalAddWord = ({ words, setWords }) => {
     }
   };
 
-  //привязать тег к слову
-  const selectTag = (tag) => {
-    setSelectTagArr((prev) => [...prev, tag]);
-    setTags((prev) => prev.filter((obj) => obj.id !== tag.id));
-  };
-
-  const deleteWordTag = (tag) => {
-    setTags((prev) => [...prev, tag]);
-    setSelectTagArr((prev) => prev.filter((obj) => obj.id !== tag.id));
-  };
-
-  // const deleteTag = (tag) => {
-  //   //удалить таг из БД
-  //   setTags((prev) => prev.filter((obj) => obj.id !== tag.id));
-  // };
 
   return (
     <div
@@ -219,11 +254,27 @@ const ModalAddWord = ({ words, setWords }) => {
             <Input
               value={translate}
               onChangeFunction={setTranslate}
-              textPlaceholder={"Перевод*"}
+              textPlaceholder={"Переводы*"}
               type={"text"}
+              onKeyDownFunction={(event) =>
+                onPressEnter(
+                  event,
+                  setTranslatesWord,
+                  translate,
+                  setTranslate,
+                  translatesWord
+                )
+              }
               svgSrc={
                 <svg
-                  onClick={() => addVariableToArr(setTranslatesWord, translate, setTranslate)}
+                  onClick={() =>
+                    addVariableToArr(
+                      setTranslatesWord,
+                      translate,
+                      setTranslate,
+                      translatesWord
+                    )
+                  }
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -253,10 +304,12 @@ const ModalAddWord = ({ words, setWords }) => {
               }
             />
 
+            {/* переводы */}
             <div className={styles.tagsBlock}>
-              {translatesWord.map((obj, index) => (
+              {translatesWord.map((obj) => (
                 <div
-                  key={index}
+                  key={obj}
+                  onClick={() => removeVariableFromArr(setTranslatesWord, obj)}
                   className={styles.tagBackground}
                 >
                   {obj}
@@ -264,142 +317,208 @@ const ModalAddWord = ({ words, setWords }) => {
               ))}
             </div>
 
-              {/* <div className={styles.tagsBlock}>
-                {tags.map((obj) => (
-                  <div
-                    key={obj.id}
-                    onClick={() => selectTag(obj)}
-                    className={styles.tagBackground}
-                  >
-                    {obj.tagName}
-                  </div>
-                ))}
-              </div> */}
-              <Input
-                value={tagInputValue}
-                onChangeFunction={setTagInputValue}
-                textPlaceholder={"Теги"}
-                type={"text"}
-                onKeyDownFunction={addNewTag}
-                svgSrc={
-                  <svg
-                    onClick={() => addVariableToArr( setSelectTagArr,tagInputValue, setTagInputValue)}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
+            {/* готовые теги */}
+            <div className={styles.tagsBlock}>
+              {tags.map((obj) => (
+                <div
+                  onClick={() =>
+                    replaceVariableInArr(
+                      setSelectTagArr,
+                      obj,
+                      selectTagArr,
+                      setTags
+                    )
+                  }
+                  key={obj.id}
+                  className={styles.existingTagBackground}
+                >
+                  {obj.value}
+                </div>
+              ))}
+            </div>
+            <Input
+              value={tagInputValue}
+              onChangeFunction={setTagInputValue}
+              textPlaceholder={"Теги"}
+              onKeyDownFunction={(event) =>
+                addTagInBdOnEnter(
+                  event,
+                  setSelectTagArr,
+                  {user_id: id, id: tags.length+ selectTagArr.length+1, value: tagInputValue},
+                  setTagInputValue,
+                  selectTagArr
+                )
+              }
+              type={"text"}
+              svgSrc={
+                <svg
+                  onClick={() =>
+                    addTagInBd(
+                      setSelectTagArr,
+                      {user_id: id, id: tags.length+ selectTagArr.length+1, value: tagInputValue},
+                      setTagInputValue,
+                      selectTagArr
+                    )
+                  }
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path
+                      d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                      stroke="#fff"
+                      stroke-width="1.5"
                       stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                        stroke="#fff"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      ></path>{" "}
-                      <path
-                        d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
-                        stroke="#fff"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                }
-              />
-
-              <div className={styles.tagsBlock}>
-                {selectTagArr.map((obj) => (
-                  <div
-                    key={obj}
-                    onClick={() => deleteWordTag(obj)}
-                    className={styles.tagBackground}
-                  >
-                    {obj}
-                  </div>
-                ))}
-              </div>
-
-              <Input
-                value={example}
-                onChangeFunction={setExample}
-                textPlaceholder={"Примеры"}
-                type={"text"}
-                svgSrc={
-                  <svg
-                    onClick={() => addVariableToArr( setExamples, example, setExample)}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
+                    ></path>{" "}
+                    <path
+                      d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
+                      stroke="#fff"
+                      stroke-width="1.5"
                       stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                        stroke="#fff"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      ></path>{" "}
-                      <path
-                        d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
-                        stroke="#fff"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                }
-              />
+                    ></path>{" "}
+                  </g>
+                </svg>
+              }
+            />
 
-              <div className={styles.examplesBlock}>
-                {examples.map((obj) => (
-                  <div className={styles.example}>
-                    {obj}
-                    <div className={styles.editImg}>
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g
-                          id="SVGRepo_tracerCarrier"
+            {/* выбранные/добавленные теги */}
+            <div className={styles.tagsBlock}>
+              {selectTagArr.map((obj) => (
+                <div
+                  onClick={() =>
+                    replaceVariableInArr(setTags, obj, tags, setSelectTagArr)
+                  }
+                  key={obj.id}
+                  className={styles.tagBackground}
+                >
+                  {obj.value}
+                </div>
+              ))}
+            </div>
+
+            <Input
+              value={example}
+              onChangeFunction={setExample}
+              textPlaceholder={"Примеры"}
+              onKeyDownFunction={(event) =>
+                onPressEnter(event, setExamples, example, setExample, examples)
+              }
+              type={"text"}
+              svgSrc={
+                <svg
+                  onClick={() =>
+                    addVariableToArr(setExamples, example, setExample, examples)
+                  }
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path
+                      d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                      stroke="#fff"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    ></path>{" "}
+                    <path
+                      d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
+                      stroke="#fff"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    ></path>{" "}
+                  </g>
+                </svg>
+              }
+            />
+
+            
+
+            <div className={styles.examplesBlock}>
+              {examples.map((obj) => (
+                <div key={obj}  className={styles.example}>
+                  {obj}
+                  <div onClick={() => editExample(obj, setExamples)} className={styles.editImg}>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z"
+                          stroke="#fff"
+                          stroke-width="1.5"
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                        ></g>
-                        <g id="SVGRepo_iconCarrier">
-                          {" "}
-                          <path
-                            d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z"
-                            stroke="#fff"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          ></path>{" "}
-                          <path
-                            d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13"
-                            stroke="#fff"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          ></path>{" "}
-                        </g>
-                      </svg>
-                    </div>
+                        ></path>
+                        <path
+                          d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13"
+                          stroke="#fff"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>
+                      </g>
+                    </svg>
                   </div>
-                ))}
-              </div>
+                  <div
+                    onClick={() => removeVariableFromArr(setExamples, obj)}
+                    className={styles.removeImg}
+                  >
+                    <svg
+                      viewBox="0 0 1024 1024"
+                      fill="#ffffff"
+                      class="icon"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      stroke="#ffffff"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path
+                          d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"
+                          fill=""
+                        ></path>
+                        <path
+                          d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"
+                          fill=""
+                        ></path>
+                        <path
+                          d="M328 340.8l32-31.2 348 348-32 32z"
+                          fill=""
+                        ></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <div className={`modal-footer${" " + styles.modalFooter}`}>
             <Button

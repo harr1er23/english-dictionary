@@ -19,9 +19,24 @@
   "dictionary": [],
   "usersTags": [
     {
-      "userId": 1,
+      "user_id": 1,
       "id": 1,
-      "tagName": "А1"
+      "value": "А1"
+    },
+    {
+      "user_id": 1,
+      "id": 2,
+      "value": "А2"
+    },
+    {
+      "user_id": 1,
+      "id": 3,
+      "value": "Тестовый тег"
+    },
+    {
+      "user_id": 1,
+      "id": 4,
+      "value": "А3"
     }
   ],
   "presets": [
