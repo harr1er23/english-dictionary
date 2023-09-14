@@ -1,6 +1,12 @@
 .background{
     color: var(--text-hover-color);
 
+    .backgroundWords{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
     .modalContent{
         background-color: var(--main-container-bg);
         .modalHeader{

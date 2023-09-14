@@ -23,6 +23,32 @@
       "word": "word",
       "transcription": "[w:3d]",
       "translate": [
+        "слово"
+      ],
+      "selectTagArr": [
+        {
+          "user_id": 1,
+          "id": 1,
+          "value": "мой сборник"
+        },
+        {
+          "user_id": 1,
+          "id": 2,
+          "value": "А1"
+        }
+      ],
+      "examples": [
+        "Let me say a word",
+        "I'll give my word"
+      ],
+      "learPercent": 25
+    },
+    {
+      "userId": 1,
+      "id": 2,
+      "word": "word",
+      "transcription": "[w:3d]",
+      "translate": [
         "слово",
         "словечко"
       ],
@@ -41,7 +67,36 @@
       "examples": [
         "Let me say a word",
         "I'll give my word"
-      ]
+      ],
+      "learPercent": 50
+    },
+    {
+      "userId": 1,
+      "id": 3,
+      "word": "worddssssss",
+      "transcription": "[w:3d dsfsf]",
+      "translate": [
+        "слово",
+        "словечко",
+        "словечечко"
+      ],
+      "selectTagArr": [
+        {
+          "user_id": 1,
+          "id": 1,
+          "value": "мой сборник"
+        },
+        {
+          "user_id": 1,
+          "id": 2,
+          "value": "А1"
+        }
+      ],
+      "examples": [
+        "Let me say a word",
+        "I'll give my word"
+      ],
+      "learPercent": 75
     }
   ],
   "usersTags": [

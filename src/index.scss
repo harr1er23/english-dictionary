@@ -17,6 +17,7 @@ body {
   --input-hover: rgba(43, 188, 154, 0.318);
   --error-toast: rgba(188, 43, 43, 0.318);
   --success-toast: rgba(43, 188, 154, 0.7);
+  --word-bg: #fff;
 }
 
 body.dark {
@@ -33,6 +34,7 @@ body.dark {
   --error-toast: rgba(188, 43, 43, 0.318);
   --success-toast: rgba(54, 65, 94, 0.7);;
   --input-hover: #1c2339;
+  --word-bg: #36415e;
 }
 
 html, body {
@@ -55,5 +57,9 @@ a{
 .background{
   display: flex;
   flex-direction: column;
-  margin-left: 110px;
+  margin-left: 100px;
+
+  @media(max-width: 700px){
+    margin-left: 10px;
+  }
 }

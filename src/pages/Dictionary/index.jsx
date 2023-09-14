@@ -5,13 +5,15 @@ import ModalAddWord from "../../components/ModalAddWord";
 import ModalWithScroll from "../../components/ModalWithScroll";
 
 import styles from "./Dictionary.module.scss";
+import Word from "../../components/Word";
 
 const Dictionary = () => {
   //слова словаря
   const [words, setWords] = React.useState([]);
 
   React.useEffect(() => {
-    axios.get(process.env.REACT_APP_DICTIONARY_KEY)
+    axios
+      .get(process.env.REACT_APP_DICTIONARY_KEY)
       .then((resp) => setWords(resp.data))
       .catch((error) => console.log(error));
   }, []);
@@ -88,16 +90,19 @@ const Dictionary = () => {
     <div className={styles.background}>
       <h2>Мой словарь</h2>
 
-      {words ? (words.map((obj) => <div key={obj.word}>{obj.word}</div>)
-      ) : (
-        <div>
-          <div>Вы еще не добавляли слов</div>
-          <p>чтобы добавить слово нажмите кнопку в низу экрана</p>
-        </div>
-      )}
+      <div className={styles.backgroundWords}>
+        {words ? (
+          words.map((obj) => <Word key={obj.id} {...obj} />)
+        ) : (
+          <div>
+            <div>Вы еще не добавляли слов</div>
+            <p>чтобы добавить слово нажмите кнопку в низу экрана</p>
+          </div>
+        )}
+      </div>
 
       {/* модальное окно добавления нового слова в словарь */}
-      <ModalAddWord words={words} setWords={setWords}/>
+      <ModalAddWord words={words} setWords={setWords} />
 
       {/* модальное окно выбора пресетов */}
       <ModalWithScroll

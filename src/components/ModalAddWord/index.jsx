@@ -154,6 +154,7 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
             translate: translatesWord,
             selectTagArr: selectTagArr,
             examples: examples,
+            learPercent: 1
           })
           .catch((error) => console.log(error));
 
