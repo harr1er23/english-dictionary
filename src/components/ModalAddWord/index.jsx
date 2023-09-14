@@ -15,18 +15,19 @@ import Button from "../Button";
 
 const id = 1;
 
-const ModalAddWord = ({ words, setWords }) => {
+const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = "", translatesValue = [], tagsValue=[], examplesValue = [] }) => {
+
   //контроллер состояния инпута ввода слова
-  const [word, setWord] = React.useState("");
+  const [word, setWord] = React.useState(wordValue);
 
   //контроллре состояния инпута ввода транскрипции
-  const [transcription, setTranscription] = React.useState("");
+  const [transcription, setTranscription] = React.useState(transcriptionValue);
 
   //контроллре состояния инпута ввода перевода
-  const [translate, setTranslate] = React.useState([]);
+  const [translateValue, setTranslateValue] = React.useState('');
 
   //массив введенных переводов для слова
-  const [translatesWord, setTranslatesWord] = React.useState([]);
+  const [translatesWord, setTranslatesWord] = React.useState(translatesValue);
 
   //массив тегов получаемый из бд
   const [tags, setTags] = React.useState([]); //подгружаются готовые теги + есть возможность добавить новый тег
@@ -42,13 +43,13 @@ const ModalAddWord = ({ words, setWords }) => {
   const [tagInputValue, setTagInputValue] = React.useState("");
 
   //массив выбранных тегов для слова
-  const [selectTagArr, setSelectTagArr] = React.useState([]);
+  const [selectTagArr, setSelectTagArr] = React.useState(tagsValue);
 
   //контроллер состояния инпута ввода примеров
   const [example, setExample] = React.useState("");
 
   //массив Добавленных примеров для слова
-  const [examples, setExamples] = React.useState([]);
+  const [examples, setExamples] = React.useState(examplesValue);
 
   //функции для функционала word speech
   const { speak, voices } = useSpeechSynthesis();
@@ -161,7 +162,7 @@ const ModalAddWord = ({ words, setWords }) => {
         //очистка инпутов модального окна
         setWord("");
         setTranscription("");
-        setTranslate("");
+        setTranslateValue("");
         setTagInputValue("");
 
         addVariableToArr(setWords, data, setWord);
@@ -175,7 +176,8 @@ const ModalAddWord = ({ words, setWords }) => {
       toast.error("Заполните поля с знаком *");
     }
   };
-
+ 
+  
 
   return (
     <div
@@ -252,16 +254,16 @@ const ModalAddWord = ({ words, setWords }) => {
               type={"text"}
             />
             <Input
-              value={translate}
-              onChangeFunction={setTranslate}
+              value={translateValue}
+              onChangeFunction={setTranslateValue}
               textPlaceholder={"Переводы*"}
               type={"text"}
               onKeyDownFunction={(event) =>
                 onPressEnter(
                   event,
                   setTranslatesWord,
-                  translate,
-                  setTranslate,
+                  translateValue,
+                  setTranslateValue,
                   translatesWord
                 )
               }
@@ -270,8 +272,8 @@ const ModalAddWord = ({ words, setWords }) => {
                   onClick={() =>
                     addVariableToArr(
                       setTranslatesWord,
-                      translate,
-                      setTranslate,
+                      translateValue,
+                      setTranslateValue,
                       translatesWord
                     )
                   }
@@ -528,6 +530,7 @@ const ModalAddWord = ({ words, setWords }) => {
               text={"Загрузить пресеты"}
             />
             <Button
+              data-bs-dismiss="modal"
               text={"Сохранить"}
               onClickFunction={addWordToDictionary}
               type={"button"}

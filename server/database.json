@@ -16,27 +16,44 @@
       "options": []
     }
   ],
-  "dictionary": [],
+  "dictionary": [
+    {
+      "userId": 1,
+      "id": 1,
+      "word": "word",
+      "transcription": "[w:3d]",
+      "translate": [
+        "слово",
+        "словечко"
+      ],
+      "selectTagArr": [
+        {
+          "user_id": 1,
+          "id": 1,
+          "value": "мой сборник"
+        },
+        {
+          "user_id": 1,
+          "id": 2,
+          "value": "А1"
+        }
+      ],
+      "examples": [
+        "Let me say a word",
+        "I'll give my word"
+      ]
+    }
+  ],
   "usersTags": [
     {
       "user_id": 1,
       "id": 1,
-      "value": "А1"
+      "value": "мой сборник"
     },
     {
       "user_id": 1,
       "id": 2,
-      "value": "А2"
-    },
-    {
-      "user_id": 1,
-      "id": 3,
-      "value": "Тестовый тег"
-    },
-    {
-      "user_id": 1,
-      "id": 4,
-      "value": "А3"
+      "value": "А1"
     }
   ],
   "presets": [
