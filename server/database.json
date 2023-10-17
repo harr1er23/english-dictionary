@@ -97,6 +97,51 @@
         "I'll give my word"
       ],
       "learPercent": 75
+    },
+    {
+      "userId": 1,
+      "id": 4,
+      "word": "enough",
+      "transcription": "[ɪˈnʌf]",
+      "translate": [
+        "достаточно",
+        "довольно",
+        "предостаточно"
+      ],
+      "selectTagArr": [
+        {
+          "user_id": 1,
+          "id": 1,
+          "value": "мой сборник"
+        }
+      ],
+      "examples": [
+        "I hope they trust me enough.... Jean Louise?",
+        "That's enough, Luke!",
+        "Enough nerves die, he dies"
+      ],
+      "learPercent": 1
+    },
+    {
+      "userId": 1,
+      "id": 5,
+      "word": "yell",
+      "transcription": "[jel]",
+      "translate": [
+        "Кричать",
+        "Вопить",
+        "Выкрикивать",
+        "Орать"
+      ],
+      "selectTagArr": [
+        {
+          "user_id": 1,
+          "id": 5,
+          "value": "слова из песен"
+        }
+      ],
+      "examples": [],
+      "learPercent": 1
     }
   ],
   "usersTags": [
@@ -109,6 +154,21 @@
       "user_id": 1,
       "id": 2,
       "value": "А1"
+    },
+    {
+      "user_id": 1,
+      "id": 3,
+      "value": "fdsf"
+    },
+    {
+      "user_id": 1,
+      "id": 4,
+      "value": "dff"
+    },
+    {
+      "user_id": 1,
+      "id": 5,
+      "value": "слова из песен"
     }
   ],
   "presets": [

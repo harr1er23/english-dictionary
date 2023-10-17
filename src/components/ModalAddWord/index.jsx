@@ -15,7 +15,15 @@ import Button from "../Button";
 
 const id = 1;
 
-const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = "", translatesValue = [], tagsValue=[], examplesValue = [] }) => {
+const ModalAddWord = ({
+  words,
+  setWords,
+  wordValue = "",
+  transcriptionValue = "",
+  translatesValue = [],
+  tagsValue = [],
+  examplesValue = [],
+}) => {
 
   //контроллер состояния инпута ввода слова
   const [word, setWord] = React.useState(wordValue);
@@ -24,7 +32,7 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
   const [transcription, setTranscription] = React.useState(transcriptionValue);
 
   //контроллре состояния инпута ввода перевода
-  const [translateValue, setTranslateValue] = React.useState('');
+  const [translateValue, setTranslateValue] = React.useState("");
 
   //массив введенных переводов для слова
   const [translatesWord, setTranslatesWord] = React.useState(translatesValue);
@@ -55,28 +63,24 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
   const { speak, voices } = useSpeechSynthesis();
   let voice = voices[104];
 
-  //функция для добавления данных в массив 
+  //функция для добавления данных в массив
   const addVariableToArr = (arrayMethod, variable, clearInputMethod, array) => {
     if (variable.length !== 0) {
-        if(typeof variable === "object"){
-            arrayMethod((prev) => [
-              ...prev,
-              variable
-            ]);
-        }else{
-          if(array.length !== 0 && array.find((obj) => obj.toLowerCase() === variable.toLowerCase())
-          ){
-            clearInputMethod('');
-          }else{
-            arrayMethod((prev) => [
-              ...prev,
-              variable
-            ]);
-          }
-        }
-        if (clearInputMethod !== null) {
+      if (typeof variable === "object") {
+        arrayMethod((prev) => [...prev, variable]);
+      } else {
+        if (
+          array.length !== 0 &&
+          array.find((obj) => obj.toLowerCase() === variable.toLowerCase())
+        ) {
           clearInputMethod("");
+        } else {
+          arrayMethod((prev) => [...prev, variable]);
         }
+      }
+      if (clearInputMethod !== null) {
+        clearInputMethod("");
+      }
     } else {
       toast.error("Заполните поле");
     }
@@ -95,10 +99,12 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
 
   //функция удаления переменной из массива
   const removeVariableFromArr = (arrayMethod, variable) => {
-    if(typeof variable === "object"){
+    if (typeof variable === "object") {
       arrayMethod((prev) => prev.filter((obj) => obj.id !== variable.id));
-    }else{
-      arrayMethod((prev) => prev.filter((obj) => obj.toLowerCase() !== variable.toLowerCase()));
+    } else {
+      arrayMethod((prev) =>
+        prev.filter((obj) => obj.toLowerCase() !== variable.toLowerCase())
+      );
     }
   };
 
@@ -116,30 +122,54 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
   };
 
   const addTagInBd = async (arrayMethod, variable, clearInputMethod, array) => {
-    if((array.length !== 0 && array.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase())) || (tags.length !== 0 && tags.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase()))){
-      clearInputMethod('');
-    }else{
+    if (
+      (array.length !== 0 &&
+        array.find(
+          (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+        )) ||
+      (tags.length !== 0 &&
+        tags.find(
+          (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+        ))
+    ) {
+      clearInputMethod("");
+    } else {
       await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
       addVariableToArr(arrayMethod, variable, clearInputMethod, array);
     }
-  }
+  };
 
-  const addTagInBdOnEnter = async (event, arrayMethod, variable, clearInputMethod, array) => {
+  const addTagInBdOnEnter = async (
+    event,
+    arrayMethod,
+    variable,
+    clearInputMethod,
+    array
+  ) => {
     if (event.key === "Enter") {
-      if((array.length !== 0 && array.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase())) || (tags.length !== 0 && tags.find((obj) => obj.value.toLowerCase() === variable.value.toLowerCase()))){
-        clearInputMethod('');
-      }else{
+      if (
+        (array.length !== 0 &&
+          array.find(
+            (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+          )) ||
+        (tags.length !== 0 &&
+          tags.find(
+            (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+          ))
+      ) {
+        clearInputMethod("");
+      } else {
         await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
         addVariableToArr(arrayMethod, variable, clearInputMethod, array);
       }
     }
-  }
+  };
 
   const editExample = (variable, arrayRemoveMethod) => {
-    setExample('');
+    setExample("");
     setExample(variable);
     removeVariableFromArr(arrayRemoveMethod, variable);
-  }
+  };
 
   //функция добавления слова в словарь
   const addWordToDictionary = async () => {
@@ -154,7 +184,7 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
             translate: translatesWord,
             selectTagArr: selectTagArr,
             examples: examples,
-            learPercent: 1
+            learPercent: 1,
           })
           .catch((error) => console.log(error));
 
@@ -177,8 +207,6 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
       toast.error("Заполните поля с знаком *");
     }
   };
- 
-  
 
   return (
     <div
@@ -347,7 +375,11 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
                 addTagInBdOnEnter(
                   event,
                   setSelectTagArr,
-                  {user_id: id, id: tags.length+ selectTagArr.length+1, value: tagInputValue},
+                  {
+                    user_id: id,
+                    id: tags.length + selectTagArr.length + 1,
+                    value: tagInputValue,
+                  },
                   setTagInputValue,
                   selectTagArr
                 )
@@ -358,7 +390,11 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
                   onClick={() =>
                     addTagInBd(
                       setSelectTagArr,
-                      {user_id: id, id: tags.length+ selectTagArr.length+1, value: tagInputValue},
+                      {
+                        user_id: id,
+                        id: tags.length + selectTagArr.length + 1,
+                        value: tagInputValue,
+                      },
                       setTagInputValue,
                       selectTagArr
                     )
@@ -449,13 +485,14 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
               }
             />
 
-            
-
             <div className={styles.examplesBlock}>
               {examples.map((obj) => (
-                <div key={obj}  className={styles.example}>
+                <div key={obj} className={styles.example}>
                   {obj}
-                  <div onClick={() => editExample(obj, setExamples)} className={styles.editImg}>
+                  <div
+                    onClick={() => editExample(obj, setExamples)}
+                    className={styles.editImg}
+                  >
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
@@ -531,6 +568,7 @@ const ModalAddWord = ({ words, setWords, wordValue = "", transcriptionValue = ""
               text={"Загрузить пресеты"}
             />
             <Button
+              toggle="modal"
               data-bs-dismiss="modal"
               text={"Сохранить"}
               onClickFunction={addWordToDictionary}
