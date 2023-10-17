@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Circle } from "rc-progress";
 
 import styles from "./Word.module.scss";
+import SmallTag from "../SmallTag";
 
 const Word = ({
   word,
@@ -99,7 +100,7 @@ const Word = ({
         </div>
         <div className={styles.tagBlock}>
           {selectTagArr.map((obj) => (
-            <div key={obj.id}>#{obj.value}</div>
+            <SmallTag key={obj.id} tagName={`#${obj.value}`}/>
           ))}
         </div>
       </div>
