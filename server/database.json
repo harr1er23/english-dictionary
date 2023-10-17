@@ -73,12 +73,12 @@
     {
       "userId": 1,
       "id": 3,
-      "word": "worddssssss",
-      "transcription": "[w:3d dsfsf]",
+      "word": "red",
+      "transcription": "[red]",
       "translate": [
-        "слово",
-        "словечко",
-        "словечечко"
+        "красный",
+        "рыжий",
+        "алый"
       ],
       "selectTagArr": [
         {
@@ -93,8 +93,8 @@
         }
       ],
       "examples": [
-        "Let me say a word",
-        "I'll give my word"
+        "Dust, swirling in red clouds",
+        "The red dusk extended more and more"
       ],
       "learPercent": 75
     },

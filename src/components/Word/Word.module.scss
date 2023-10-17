@@ -3,7 +3,6 @@
     width: 30%;
     margin: 5px 10px;
     padding: 10px 15px;
-    justify-content: space-between;
     border: 1px solid var(--word-bg);
     background-color: var(--word-bg);
     color: var(--tertiary-bg);
@@ -14,11 +13,11 @@
         width: 10%;
     }
 
-    .editImg {
-        width: 20px;
-        height: 20px;
+      .deleteImg {
+        width: 25px;
+        height: 25px;
         cursor: pointer;
-        margin: 0 0px;
+        margin: 0 0 0 auto;
       }
 
     @media(max-width: 700px){
@@ -29,6 +28,11 @@
         .wordHeader{
             display: flex;
             flex-wrap: wrap;
+            .editImg {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+              }
             .soundImg {
                 width: 20px;
                 height: 20px;
@@ -44,15 +48,8 @@
 
         .tagBlock{
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
         }
-    }
-
-    .progressBar{
-        display: flex;
-        margin: auto 0 auto auto;
-        width: 30px;
-        height: 30px;
-        background-color: black;
     }
 }

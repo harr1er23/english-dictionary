@@ -88,7 +88,7 @@ const Dictionary = () => {
 
   return (
     <div className={styles.background}>
-      <h2>Мой словарь</h2>
+      <h2>Dictionary</h2>
 
       <div className={styles.backgroundWords}>
         {words ? (
