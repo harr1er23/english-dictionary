@@ -58,7 +58,7 @@
     }
 
     .addWordButton{
-        position: absolute;
+        position: fixed;
         left: 90%;
         bottom: 8%;
         width: 70px;
@@ -67,12 +67,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: var(--main-container-bg);
+        background-color: var(--quaternary-bg);
         cursor: pointer;
 
         div{
             font-size: 30px;
-            color: var(--text-color)
+            color: var(--text-hover-color)
         }
     }
 }
@@ -80,22 +80,8 @@
 @media (max-width: 900px) {
     .background{
         .addWordButton{
-            position: absolute;
             left: 75%;
             bottom: 5%;
-            width: 70px;
-            height: 70px;
-            border-radius: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--main-container-bg);
-            cursor: pointer;
-    
-            div{
-                font-size: 30px;
-                color: var(--text-color)
-            }
         }
     }
 }
