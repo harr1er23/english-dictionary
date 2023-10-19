@@ -1,20 +1,28 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 import ModalAddWord from "../../components/ModalAddWord";
 import ModalWithScroll from "../../components/ModalWithScroll";
 
 import styles from "./Dictionary.module.scss";
 import Word from "../../components/Word";
-import { useDispatch, useSelector } from "react-redux";
+
+import { toggleModal } from "../../store/sessionModal/sessionModalSlice";
 import { fetchDictionaryWords } from "../../store/dictionaryWords/dictionaryWordsSlice";
+import { setUser } from "../../store/user/userSlice";
 
 const Dictionary = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     dispatch(fetchDictionaryWords());
   }, [])
 
+  const {show} = useSelector(state => state.sessionModalSlice);
   const {dictionaryWords, status} = useSelector(state => state.dictionaryWordSlice)
 
   const [wordPresets, setWordPresets] = React.useState([
@@ -86,7 +94,29 @@ const Dictionary = () => {
     },
   ]);
 
-  return (
+    const handleClose = () => {
+    localStorage.clear();
+    dispatch(setUser(null));
+    navigate("/login");
+    dispatch(toggleModal(false));
+  };
+
+  return status === "error" ? (<Modal
+    show={show}
+    onHide={() => dispatch(toggleModal(false))}
+    backdrop="static"
+    keyboard={false}
+  >
+    <Modal.Header closeButton>
+      <Modal.Title>Предупреждение</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>Сессия истекла. Авторизируйтесь снова!</Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={handleClose}>
+        Авторизироваться
+      </Button>
+    </Modal.Footer>
+  </Modal>) :(
     <div className={styles.background}>
       <h2>Dictionary</h2>
 
