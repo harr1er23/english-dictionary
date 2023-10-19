@@ -1,0 +1,29 @@
+.backgroundLogin{
+    display: flex;
+    flex-direction: column;
+    padding: 15px 30px;
+    background-color: var(--text-hover-color);
+    color: var(--main-bg);
+    border-radius: 10px;
+
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform : translate(-50%, -50%);
+
+    input{
+        background-color: var(--main-bg);
+    }
+
+    .loginButtons{
+        display: flex;
+        justify-content: space-between;
+
+        div{
+            margin: 0 10px;
+            background-color: var(--main-bg);
+            border: 1px solid var(--main-bg);
+            color: var(--text-hover-color);
+        }
+    }
+}
