@@ -8,7 +8,7 @@ import "./Sidebar.scss";
 const Sidebar = () => {
   const [isShrinkView, setIsShrinkView] = React.useState(true);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
-  const [clickButton, setClickButton] = React.useState(window.location.pathname);
+  const [clickButton, setClickButton] = React.useState(window.location.pathname.split("/")[2]);
   const sidebarRef = useRef();
 
   const handleSidebarView = () => {
@@ -139,7 +139,7 @@ const Sidebar = () => {
               </svg>
             }
             text={"Словарь"}
-            link={"/dictionary"}
+            link={"dictionary"}
             clickButton={clickButton}
             setClickButton={setClickButton}
             setIsShrinkView={setIsShrinkView}
@@ -160,7 +160,7 @@ const Sidebar = () => {
               </svg>
             }
             text={"Тренировка"}
-            link={"/training"}
+            link={"training"}
             clickButton={clickButton}
             setClickButton={setClickButton}
             setIsShrinkView={setIsShrinkView}
@@ -182,7 +182,7 @@ const Sidebar = () => {
               </svg>
             }
             text={"Грамматика"}
-            link={"/grammar"}
+            link={"grammar"}
             clickButton={clickButton}
             setClickButton={setClickButton}
             setIsShrinkView={setIsShrinkView}
@@ -206,7 +206,7 @@ const Sidebar = () => {
               </svg>
             }
             text={"Статистика"}
-            link={"/statistics"}
+            link={"statistics"}
             clickButton={clickButton}
             setClickButton={setClickButton}
             setIsShrinkView={setIsShrinkView}
@@ -228,13 +228,13 @@ const Sidebar = () => {
               </svg>
             }
             text={"Настройки"}
-            link={"/settings"}
+            link={"settings"}
             clickButton={clickButton}
             setClickButton={setClickButton}
             setIsShrinkView={setIsShrinkView}
           />
         </ul>
-        <Link to="/profile" className="sidebar-profileSection">
+        <Link to="profile" className="sidebar-profileSection">
           <img
             src="https://assets.codepen.io/3306515/i-know.jpg"
             width="40"
