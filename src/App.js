@@ -38,12 +38,6 @@ function App() {
     <>
       <Toaster
         toastOptions={{
-          success: {
-            style: {
-              background: "var(--success-toast)",
-              color: "white",
-            },
-          },
           error: {
             style: {
               background: "var(--error-toast)",

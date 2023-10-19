@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import md5 from 'md5';
 
 import styles from "./Login.module.scss";
 
@@ -14,31 +15,41 @@ import Input from "../../components/Input";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { pass, email } = useSelector(state => state.authSlice);
+  const pass = useSelector(state => state.authSlice.pass);
+  const  email = useSelector(state => state.authSlice.email);
 
   const onClickLogin = async () => {
-    await axios
-      .post("/api/v1/admin/login", {
-        email: email,
-        password: pass,
+    try{
+      const hashPass = md5(pass);
+      await axios.post(
+        process.env.REACT_APP_AUTH_KEY,
+        { email: email, password: hashPass},
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        }
+      ).then((resp) => {
+        toast.success("Авторизация прошла успешно!");
+        dispatch(setUser(resp.data));
+        navigate("/app/dictionary");
+        localStorage.clear();
+        localStorage.setItem("user", JSON.stringify(resp.data));
       })
-      .then((resp) => {
-        // toast.success("Вы вошли в систему");
-        // dispatch(setUser(resp.data));
-        // navigate("/adminPanel/users");
-        // localStorage.clear();
-        // localStorage.setItem("adminUser", JSON.stringify(resp.data));
-      })
-      // .catch((err) => {
-      //   if (err.response.status === 422) {
-      //     toast.error("Пароль должен соответсвовать требованиям!");
-      //   } else if (err.response.status === 401) {
-      //     toast.error("Не верный пароль!");
-      //   } else {
-      //     toast.error("Что-то сломалось, попробуйте позже :(");
-      //   }
-      //   console.log(err);
-      // });
+    }catch(err){
+      console.log(err);
+      if(err.response.status === 401){
+        toast.error("Данного пользователя не существует!");
+      }else if(err.response.status === 404){
+        toast.error("Написать");
+      }else if(err.response.status === 400){
+        toast.error("Заполните все поля!");
+      }
+      else{
+        toast.error("Что-то сломалось, попробуйте позже :(");
+      }
+    }
   };
 
   const changePassInput = (str) => {
@@ -55,22 +66,10 @@ const Login = () => {
       <div className="mb-3">
         <div>Email</div>
         <Input type={"email"} value={email} onChangeFunction={changeEmailInput}/>
-        {/* <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={(e) => dispatch(setEmail(e.target.value))}
-        /> */}
       </div>
       <div className="mb-3">
         <div>Password</div>
         <Input type={"password"} value={pass} onChangeFunction={changePassInput}/>
-        {/* <input
-          type="password"
-          className="form-control"
-          value={pass}
-          onChange={(e) => dispatch(setPass(e.target.value))}
-        /> */}
       </div>
       <div className={styles.loginButtons}>
       <div
