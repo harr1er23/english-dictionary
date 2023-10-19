@@ -26,6 +26,7 @@
     "react-router-dom": "^6.15.0",
     "react-scripts": "^5.0.1",
     "react-speech-kit": "^3.0.1",
+    "react-spinners": "^0.13.8",
     "react-vis": "^1.12.1",
     "reactjs-percentage-circle": "^1.0.0",
     "reverso-api": "^2.22.6",
