@@ -24,6 +24,11 @@ const Registration = () => {
   const pass = useSelector((state) => state.authSlice.pass);
 
   const onClickRegistration = async () => {
+    if(pass.length === 0 || email.length === 0 || nickName.length === 0){
+      toast.error("Заполните все поля!");
+      return;
+    }
+
     try {
       const hashPass = md5(pass);
       await axios

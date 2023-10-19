@@ -1,15 +1,23 @@
 import React, { useRef } from "react";
-import { Link} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import SidebarButton from "../SidebarButton";
 
 import "./Sidebar.scss";
+import { setUser } from "../../store/user/userSlice";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const sidebarRef = useRef();
+
+  const [showExit, setShowExit] = React.useState(false);
   const [isShrinkView, setIsShrinkView] = React.useState(true);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
-  const [clickButton, setClickButton] = React.useState(window.location.pathname.split("/")[2]);
-  const sidebarRef = useRef();
+  const [clickButton, setClickButton] = React.useState(
+    window.location.pathname.split("/")[2]
+  );
 
   const handleSidebarView = () => {
     setIsShrinkView(!isShrinkView);
@@ -22,18 +30,27 @@ const Sidebar = () => {
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
-      if(!event.composedPath().includes(sidebarRef.current)){
-        setIsShrinkView(true)
+      if (!event.composedPath().includes(sidebarRef.current)) {
+        setIsShrinkView(true);
       }
     };
 
-    document.body.addEventListener('click', handleClickOutside);
+    document.body.addEventListener("click", handleClickOutside);
 
-    return () =>  document.body.removeEventListener('click', handleClickOutside);
-  }, [])
+    return () => document.body.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  // const onClickExit = () => {
+  //   localStorage.clear();
+  //   navigate("/login");
+  //   dispatch(setUser(null));
+  // };
 
   return (
-    <div ref={sidebarRef} className={`sidebar-container${isShrinkView ? " shrink" : ""}`}>
+    <div
+      ref={sidebarRef}
+      className={`sidebar-container${isShrinkView ? " shrink" : ""}`}
+    >
       <button
         className="sidebar-viewButton"
         type="button"
@@ -234,7 +251,81 @@ const Sidebar = () => {
             setIsShrinkView={setIsShrinkView}
           />
         </ul>
-        <Link to="profile" className="sidebar-profileSection">
+        {showExit && (
+          <div className="exitBlock">
+            <div className="sidebar-listItem">
+              <div>
+                <svg
+                  className="exitImg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="#000000"
+                >
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path
+                      d="M15 12L6 12M6 12L8 14M6 12L8 10"
+                      stroke="#ffffff"
+                      strokeWidth="0.9600000000000002"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>{" "}
+                    <path
+                      d="M12 21.9827C10.4465 21.9359 9.51995 21.7626 8.87865 21.1213C8.11027 20.3529 8.01382 19.175 8.00171 17M16 21.9983C18.175 21.9862 19.3529 21.8897 20.1213 21.1213C21 20.2426 21 18.8284 21 16V14V10V8C21 5.17157 21 3.75736 20.1213 2.87868C19.2426 2 17.8284 2 15 2H14C11.1715 2 9.75733 2 8.87865 2.87868C8.11027 3.64706 8.01382 4.82497 8.00171 7"
+                      stroke="#ffffff"
+                      strokeWidth="0.9600000000000002"
+                      strokeLinecap="round"
+                    ></path>{" "}
+                    <path
+                      d="M3 9.5V14.5C3 16.857 3 18.0355 3.73223 18.7678C4.46447 19.5 5.64298 19.5 8 19.5M3.73223 5.23223C4.46447 4.5 5.64298 4.5 8 4.5"
+                      stroke="#ffffff"
+                      strokeWidth="0.9600000000000002"
+                      strokeLinecap="round"
+                    ></path>{" "}
+                  </g>
+                </svg>
+                <span className="sidebar-listItemText">Выход</span>
+              </div>
+              <div onClick={() => navigate("profile")}>
+                <svg
+                  className="exitImg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path
+                      d="M14 21.0001V15.0001H10V21.0001M19 9.77818V16.2001C19 17.8802 19 18.7203 18.673 19.362C18.3854 19.9265 17.9265 20.3855 17.362 20.6731C16.7202 21.0001 15.8802 21.0001 14.2 21.0001H9.8C8.11984 21.0001 7.27976 21.0001 6.63803 20.6731C6.07354 20.3855 5.6146 19.9265 5.32698 19.362C5 18.7203 5 17.8802 5 16.2001V9.77753M21 12.0001L15.5668 5.96405C14.3311 4.59129 13.7133 3.9049 12.9856 3.65151C12.3466 3.42894 11.651 3.42899 11.0119 3.65165C10.2843 3.90516 9.66661 4.59163 8.43114 5.96458L3 12.0001"
+                      stroke="#ffffff"
+                      stroke-width="1.08"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>{" "}
+                  </g>
+                </svg>
+                <span className="sidebar-listItemText">Профиль</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div
+          onClick={() => setShowExit(!showExit)}
+          className="sidebar-profileSection"
+        >
           <img
             src="https://assets.codepen.io/3306515/i-know.jpg"
             width="40"
@@ -242,7 +333,7 @@ const Sidebar = () => {
             alt="Monica Geller"
           />
           <span>Monica Geller</span>
-        </Link>
+        </div>
       </div>
     </div>
   );
