@@ -40,11 +40,11 @@ const Sidebar = () => {
     return () => document.body.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // const onClickExit = () => {
-  //   localStorage.clear();
-  //   navigate("/login");
-  //   dispatch(setUser(null));
-  // };
+  const onClickExit = () => {
+    localStorage.clear();
+    navigate("/login");
+    dispatch(setUser(null));
+  };
 
   return (
     <div
@@ -254,7 +254,7 @@ const Sidebar = () => {
         {showExit && (
           <div className="exitBlock">
             <div className="sidebar-listItem">
-              <div>
+              <div onClick={() => onClickExit()}>
                 <svg
                   className="exitImg"
                   viewBox="0 0 24 24"
