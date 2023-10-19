@@ -2,6 +2,8 @@ import React from "react";
 import { useSpeechSynthesis } from "react-speech-kit";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import debounce from "lodash.debounce";
 
 //styles
 import styles from "./ModalAddWord.module.scss";
@@ -13,209 +15,224 @@ import sound from "../../assets/ico/sound.png";
 import Input from "../Input";
 import Button from "../Button";
 
+//slices
+import { setTranscriptionValue, setWordValue } from "../../store/addNewWord/addNewWordSlice";
+import { fetchUserTags } from "../../store/userTags/userTagsSlice";
+
 const id = 1;
 
-const ModalAddWord = ({
-  words,
-  setWords,
-  wordValue = "",
-  transcriptionValue = "",
-  translatesValue = [],
-  tagsValue = [],
-  examplesValue = [],
-}) => {
+const ModalAddWord = () => {
+  const dispatch = useDispatch();
+  const {wordValue, transcriptionValue, translatesValue, tagsValue, examplesValue} = useSelector(state => state.addNewWordSlice);
+  const {userTags} = useSelector(state => state.userTagsSlice);
+  const {dictionaryWords} = useSelector(state => state.dictionaryWordSlice)
   //контроллер состояния инпута ввода слова
   const [word, setWord] = React.useState(wordValue);
 
-  //контроллре состояния инпута ввода транскрипции
+  const updateWordInputValue = React.useCallback(
+    debounce((str) => {
+      dispatch(setWordValue(str))
+      //обращение к апи переводчика
+    }, 700),[]);
+
+  const onChangeWordInput = (event) => {
+    updateWordInputValue(event.target.value);
+    setWord(event.target.value);
+  }
+
+  //контроллер состояния инпута ввода транскрипции
   const [transcription, setTranscription] = React.useState(transcriptionValue);
 
-  //контроллре состояния инпута ввода перевода
+  const updateTranscriptionInputValue = React.useCallback(
+    debounce((str) => {
+      dispatch(setTranscriptionValue(str))
+    }, 700),[]);
+
+  const onChangeTranscriptionInput = (event) => {
+    setTranscription(event.target.value);
+    updateTranscriptionInputValue(event.target.value);
+  }
+
+  //контроллер состояния инпута ввода перевода
   const [translateValue, setTranslateValue] = React.useState("");
-
-  //массив введенных переводов для слова
-  const [translatesWord, setTranslatesWord] = React.useState(translatesValue);
-
-  //массив тегов получаемый из бд
-  const [tags, setTags] = React.useState([]); //подгружаются готовые теги + есть возможность добавить новый тег
-
-  React.useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_TAGS_KEY)
-      .then((resp) => setTags(resp.data))
-      .catch((error) => console.log(error));
-  }, []);
-
   //контроллер состояния инпута ввода нового тега
   const [tagInputValue, setTagInputValue] = React.useState("");
+  //контроллер состояния инпута ввода примеров
+  const [example, setExample] = React.useState("");
+
+
+  //массив переводов для слова
+  const [translatesWord, setTranslatesWord] = React.useState(translatesValue);
 
   //массив выбранных тегов для слова
   const [selectTagArr, setSelectTagArr] = React.useState(tagsValue);
 
-  //контроллер состояния инпута ввода примеров
-  const [example, setExample] = React.useState("");
-
   //массив Добавленных примеров для слова
   const [examples, setExamples] = React.useState(examplesValue);
 
-  //функции для функционала word speech
-  const { speak, voices } = useSpeechSynthesis();
-  let voice = voices[104];
 
-  //функция для добавления данных в массив
-  const addVariableToArr = (arrayMethod, variable, clearInputMethod, array) => {
-    if (variable.length !== 0) {
-      if (typeof variable === "object") {
-        arrayMethod((prev) => [...prev, variable]);
-      } else {
-        if (
-          array.length !== 0 &&
-          array.find((obj) => obj.toLowerCase() === variable.toLowerCase())
-        ) {
-          clearInputMethod("");
-        } else {
-          arrayMethod((prev) => [...prev, variable]);
-        }
-      }
-      if (clearInputMethod !== null) {
-        clearInputMethod("");
-      }
-    } else {
-      toast.error("Заполните поле");
-    }
-  };
+  React.useEffect(() => {
+    dispatch(fetchUserTags())
+  }, []);
 
-  //функция замены переменной между двумя массивами
-  const replaceVariableInArr = (
-    arrayAddMethod,
-    addedVariable,
-    arrayForLength,
-    arrayRemoveMethod
-  ) => {
-    addVariableToArr(arrayAddMethod, addedVariable, null, arrayForLength);
-    removeVariableFromArr(arrayRemoveMethod, addedVariable);
-  };
+    //функции для функционала word speech
+    const { speak, voices } = useSpeechSynthesis();
+    let voice = voices[104];
 
-  //функция удаления переменной из массива
-  const removeVariableFromArr = (arrayMethod, variable) => {
-    if (typeof variable === "object") {
-      arrayMethod((prev) => prev.filter((obj) => obj.id !== variable.id));
-    } else {
-      arrayMethod((prev) =>
-        prev.filter((obj) => obj.toLowerCase() !== variable.toLowerCase())
-      );
-    }
-  };
+  // //функция для добавления данных в массив
+  // const addVariableToArr = (arrayMethod, variable, clearInputMethod, array) => {
+  //   if (variable.length !== 0) {
+  //     if (typeof variable === "object") {
+  //       arrayMethod((prev) => [...prev, variable]);
+  //     } else {
+  //       if (
+  //         array.length !== 0 &&
+  //         array.find((obj) => obj.toLowerCase() === variable.toLowerCase())
+  //       ) {
+  //         clearInputMethod("");
+  //       } else {
+  //         arrayMethod((prev) => [...prev, variable]);
+  //       }
+  //     }
+  //     if (clearInputMethod !== null) {
+  //       clearInputMethod("");
+  //     }
+  //   } else {
+  //     toast.error("Заполните поле");
+  //   }
+  // };
 
-  //функция для добавления переменной в массив при нажатии на энтер
-  const onPressEnter = (
-    event,
-    arrayMethod,
-    variable,
-    clearInputMethod,
-    array
-  ) => {
-    if (event.key === "Enter") {
-      addVariableToArr(arrayMethod, variable, clearInputMethod, array);
-    }
-  };
+  // //функция замены переменной между двумя массивами
+  // const replaceVariableInArr = (
+  //   arrayAddMethod,
+  //   addedVariable,
+  //   arrayForLength,
+  //   arrayRemoveMethod
+  // ) => {
+  //   addVariableToArr(arrayAddMethod, addedVariable, null, arrayForLength);
+  //   removeVariableFromArr(arrayRemoveMethod, addedVariable);
+  // };
 
-  const addTagInBd = async (arrayMethod, variable, clearInputMethod, array) => {
-    if (variable.value.length !== 0) {
-      if (
-        (array.length !== 0 &&
-          array.find(
-            (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
-          )) ||
-        (tags.length !== 0 &&
-          tags.find(
-            (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
-          ))
-      ) {
-        clearInputMethod("");
-        toast.error("Такой тег уже существует!");
-      } else {
-        await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
-        addVariableToArr(arrayMethod, variable, clearInputMethod, array);
-      }
-    } else {
-      toast.error("Заполните поле!");
-    }
-  };
+  // //функция удаления переменной из массива
+  // const removeVariableFromArr = (arrayMethod, variable) => {
+  //   if (typeof variable === "object") {
+  //     arrayMethod((prev) => prev.filter((obj) => obj.id !== variable.id));
+  //   } else {
+  //     arrayMethod((prev) =>
+  //       prev.filter((obj) => obj.toLowerCase() !== variable.toLowerCase())
+  //     );
+  //   }
+  // };
 
-  const addTagInBdOnEnter = async (
-    event,
-    arrayMethod,
-    variable,
-    clearInputMethod,
-    array
-  ) => {
-    if (event.key === "Enter") {
-      if (variable.value.length !== 0) {
-        if (
-          (array.length !== 0 &&
-            array.find(
-              (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
-            )) ||
-          (tags.length !== 0 &&
-            tags.find(
-              (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
-            ))
-        ) {
-          clearInputMethod("");
-          toast.error("Такой тег уже существует!");
-        } else {
-          await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
-          addVariableToArr(arrayMethod, variable, clearInputMethod, array);
-        }
-      } else {
-        toast.error("Заполните поле!");
-      }
-    }
-  };
+  // //функция для добавления переменной в массив при нажатии на энтер
+  // const onPressEnter = (
+  //   event,
+  //   arrayMethod,
+  //   variable,
+  //   clearInputMethod,
+  //   array
+  // ) => {
+  //   if (event.key === "Enter") {
+  //     addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+  //   }
+  // };
 
-  const editExample = (variable, arrayRemoveMethod) => {
-    setExample("");
-    setExample(variable);
-    removeVariableFromArr(arrayRemoveMethod, variable);
-  };
+  // const addTagInBd = async (arrayMethod, variable, clearInputMethod, array) => {
+  //   if (variable.value.length !== 0) {
+  //     if (
+  //       (array.length !== 0 &&
+  //         array.find(
+  //           (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+  //         )) ||
+  //       (tags.length !== 0 &&
+  //         tags.find(
+  //           (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+  //         ))
+  //     ) {
+  //       clearInputMethod("");
+  //       toast.error("Такой тег уже существует!");
+  //     } else {
+  //       await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
+  //       addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+  //     }
+  //   } else {
+  //     toast.error("Заполните поле!");
+  //   }
+  // };
 
-  //функция добавления слова в словарь
-  const addWordToDictionary = async () => {
-    if (word.length !== 0 && translatesWord.length !== 0) {
-      if (!words.find((obj) => obj.word === word)) {
-        const { data } = await axios
-          .post(process.env.REACT_APP_DICTIONARY_KEY, {
-            userId: id,
-            id: words.length + 1,
-            word: word,
-            transcription: transcription,
-            translate: translatesWord,
-            selectTagArr: selectTagArr,
-            examples: examples,
-            learPercent: 1,
-          })
-          .catch((error) => console.log(error));
+  // const addTagInBdOnEnter = async (
+  //   event,
+  //   arrayMethod,
+  //   variable,
+  //   clearInputMethod,
+  //   array
+  // ) => {
+  //   if (event.key === "Enter") {
+  //     if (variable.value.length !== 0) {
+  //       if (
+  //         (array.length !== 0 &&
+  //           array.find(
+  //             (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+  //           )) ||
+  //         (tags.length !== 0 &&
+  //           tags.find(
+  //             (obj) => obj.value.toLowerCase() === variable.value.toLowerCase()
+  //           ))
+  //       ) {
+  //         clearInputMethod("");
+  //         toast.error("Такой тег уже существует!");
+  //       } else {
+  //         await axios.post(process.env.REACT_APP_TAGS_KEY, variable);
+  //         addVariableToArr(arrayMethod, variable, clearInputMethod, array);
+  //       }
+  //     } else {
+  //       toast.error("Заполните поле!");
+  //     }
+  //   }
+  // };
 
-        console.log(data);
+  // const editExample = (variable, arrayRemoveMethod) => {
+  //   setExample("");
+  //   setExample(variable);
+  //   removeVariableFromArr(arrayRemoveMethod, variable);
+  // };
 
-        //очистка инпутов модального окна
-        setWord("");
-        setTranscription("");
-        setTranslateValue("");
-        setTagInputValue("");
+  // //функция добавления слова в словарь
+  // const addWordToDictionary = async () => {
+  //   if (word.length !== 0 && translatesWord.length !== 0) {
+  //     if (!dictionaryWords.find((obj) => obj.word === word)) {
+  //       const { data } = await axios
+  //         .post(process.env.REACT_APP_DICTIONARY_KEY, {
+  //           userId: id,
+  //           id: dictionaryWords.length + 1,
+  //           word: word,
+  //           transcription: transcription,
+  //           translate: translatesWord,
+  //           selectTagArr: selectTagArr,
+  //           examples: examples,
+  //           learPercent: 1,
+  //         })
+  //         .catch((error) => console.log(error));
 
-        addVariableToArr(setWords, data, setWord);
+  //       console.log(data);
 
-        //уведомление об успешном добавлении
-        toast.success("Слово добавлено в словарь!");
-      } else {
-        toast.error("Такое слово уже есть!");
-      }
-    } else {
-      toast.error("Заполните поля с знаком *");
-    }
-  };
+  //       //очистка инпутов модального окна
+  //       setWord("");
+  //       setTranscription("");
+  //       setTranslateValue("");
+  //       setTagInputValue("");
+
+  //       addVariableToArr(setWords, data, setWord);
+
+  //       //уведомление об успешном добавлении
+  //       toast.success("Слово добавлено в словарь!");
+  //     } else {
+  //       toast.error("Такое слово уже есть!");
+  //     }
+  //   } else {
+  //     toast.error("Заполните поля с знаком *");
+  //   }
+  // };
 
   return (
     <div
@@ -296,25 +313,25 @@ const ModalAddWord = ({
               onChangeFunction={setTranslateValue}
               textPlaceholder={"Переводы*"}
               type={"text"}
-              onKeyDownFunction={(event) =>
-                onPressEnter(
-                  event,
-                  setTranslatesWord,
-                  translateValue,
-                  setTranslateValue,
-                  translatesWord
-                )
-              }
+              // onKeyDownFunction={(event) =>
+              //   onPressEnter(
+              //     event,
+              //     setTranslatesWord,
+              //     translateValue,
+              //     setTranslateValue,
+              //     translatesWord
+              //   )
+              // }
               svgSrc={
                 <svg
-                  onClick={() =>
-                    addVariableToArr(
-                      setTranslatesWord,
-                      translateValue,
-                      setTranslateValue,
-                      translatesWord
-                    )
-                  }
+                  // onClick={() =>
+                  //   addVariableToArr(
+                  //     setTranslatesWord,
+                  //     translateValue,
+                  //     setTranslateValue,
+                  //     translatesWord
+                  //   )
+                  // }
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -349,7 +366,7 @@ const ModalAddWord = ({
               {translatesWord.map((obj) => (
                 <div
                   key={obj}
-                  onClick={() => removeVariableFromArr(setTranslatesWord, obj)}
+                  // onClick={() => removeVariableFromArr(setTranslatesWord, obj)}
                   className={styles.tagBackground}
                 >
                   {obj}
@@ -359,16 +376,16 @@ const ModalAddWord = ({
 
             {/* готовые теги */}
             <div className={styles.tagsBlock}>
-              {tags.map((obj) => (
+              {userTags.map((obj) => (
                 <div
-                  onClick={() =>
-                    replaceVariableInArr(
-                      setSelectTagArr,
-                      obj,
-                      selectTagArr,
-                      setTags
-                    )
-                  }
+                  // onClick={() =>
+                  //   replaceVariableInArr(
+                  //     setSelectTagArr,
+                  //     obj,
+                  //     selectTagArr,
+                  //     setTags
+                  //   )
+                  // }
                   key={obj.id}
                   className={styles.existingTagBackground}
                 >
@@ -380,34 +397,34 @@ const ModalAddWord = ({
               value={tagInputValue}
               onChangeFunction={setTagInputValue}
               textPlaceholder={"Теги"}
-              onKeyDownFunction={(event) =>
-                addTagInBdOnEnter(
-                  event,
-                  setSelectTagArr,
-                  {
-                    user_id: id,
-                    id: tags.length + selectTagArr.length + 1,
-                    value: tagInputValue,
-                  },
-                  setTagInputValue,
-                  selectTagArr
-                )
-              }
+              // onKeyDownFunction={(event) =>
+              //   addTagInBdOnEnter(
+              //     event,
+              //     setSelectTagArr,
+              //     {
+              //       user_id: id,
+              //       id: tags.length + selectTagArr.length + 1,
+              //       value: tagInputValue,
+              //     },
+              //     setTagInputValue,
+              //     selectTagArr
+              //   )
+              // }
               type={"text"}
               svgSrc={
                 <svg
-                  onClick={() =>
-                    addTagInBd(
-                      setSelectTagArr,
-                      {
-                        user_id: id,
-                        id: tags.length + selectTagArr.length + 1,
-                        value: tagInputValue,
-                      },
-                      setTagInputValue,
-                      selectTagArr
-                    )
-                  }
+                  // onClick={() =>
+                  //   addTagInBd(
+                  //     setSelectTagArr,
+                  //     {
+                  //       user_id: id,
+                  //       id: tags.length + selectTagArr.length + 1,
+                  //       value: tagInputValue,
+                  //     },
+                  //     setTagInputValue,
+                  //     selectTagArr
+                  //   )
+                  // }
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -441,9 +458,9 @@ const ModalAddWord = ({
             <div className={styles.tagsBlock}>
               {selectTagArr.map((obj) => (
                 <div
-                  onClick={() =>
-                    replaceVariableInArr(setTags, obj, tags, setSelectTagArr)
-                  }
+                  // onClick={() =>
+                  //   replaceVariableInArr(setTags, obj, tags, setSelectTagArr)
+                  // }
                   key={obj.id}
                   className={styles.tagBackground}
                 >
@@ -456,15 +473,15 @@ const ModalAddWord = ({
               value={example}
               onChangeFunction={setExample}
               textPlaceholder={"Примеры"}
-              onKeyDownFunction={(event) =>
-                onPressEnter(event, setExamples, example, setExample, examples)
-              }
+              // onKeyDownFunction={(event) =>
+              //   onPressEnter(event, setExamples, example, setExample, examples)
+              // }
               type={"text"}
               svgSrc={
                 <svg
-                  onClick={() =>
-                    addVariableToArr(setExamples, example, setExample, examples)
-                  }
+                  // onClick={() =>
+                  //   addVariableToArr(setExamples, example, setExample, examples)
+                  // }
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -499,7 +516,7 @@ const ModalAddWord = ({
                 <div key={obj} className={styles.example}>
                   {obj}
                   <div
-                    onClick={() => editExample(obj, setExamples)}
+                    // onClick={() => editExample(obj, setExamples)}
                     className={styles.editImg}
                   >
                     <svg
@@ -532,7 +549,7 @@ const ModalAddWord = ({
                     </svg>
                   </div>
                   <div
-                    onClick={() => removeVariableFromArr(setExamples, obj)}
+                    // onClick={() => removeVariableFromArr(setExamples, obj)}
                     className={styles.removeImg}
                   >
                     <svg
@@ -580,7 +597,7 @@ const ModalAddWord = ({
               toggle="modal"
               data-bs-dismiss="modal"
               text={"Сохранить"}
-              onClickFunction={addWordToDictionary}
+              // onClickFunction={addWordToDictionary}
               type={"button"}
             />
           </div>

@@ -1,22 +1,22 @@
 import React from "react";
-import axios from "axios";
 
 import ModalAddWord from "../../components/ModalAddWord";
 import ModalWithScroll from "../../components/ModalWithScroll";
 
 import styles from "./Dictionary.module.scss";
 import Word from "../../components/Word";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDictionaryWords } from "../../store/dictionaryWords/dictionaryWordsSlice";
 
 const Dictionary = () => {
-  //слова словаря
-  const [words, setWords] = React.useState([]);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_DICTIONARY_KEY)
-      .then((resp) => setWords(resp.data))
-      .catch((error) => console.log(error));
-  }, []);
+    dispatch(fetchDictionaryWords());
+  }, [])
+
+  const {dictionaryWords, status} = useSelector(state => state.dictionaryWordSlice)
+
   const [wordPresets, setWordPresets] = React.useState([
     {
       idPresets: 1,
@@ -91,18 +91,11 @@ const Dictionary = () => {
       <h2>Dictionary</h2>
 
       <div className={styles.backgroundWords}>
-        {words ? (
-          words.map((obj) => <Word key={obj.id} {...obj} />)
-        ) : (
-          <div>
-            <div>Вы еще не добавляли слов</div>
-            <p>чтобы добавить слово нажмите кнопку в низу экрана</p>
-          </div>
-        )}
+        {status === "loading" ? <div>Loading...</div> : status === "success" ? (dictionaryWords.length === 0 ? (dictionaryWords.map((obj) => <Word key={obj.id} {...obj} />)) : (<div><div>Вы еще не добавляли слов</div><p>чтобы добавить слово нажмите кнопку в низу экрана</p></div>)) : status === "error" && (<div>Error</div>)}
       </div>
 
       {/* модальное окно добавления нового слова в словарь */}
-      <ModalAddWord words={words} setWords={setWords} />
+      <ModalAddWord />
 
       {/* модальное окно выбора пресетов */}
       <ModalWithScroll
