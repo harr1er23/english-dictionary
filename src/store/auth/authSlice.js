@@ -19,12 +19,17 @@ export const authSlice = createSlice({
     },
     setName: (state, action) => {
       state.nickName = action.payload;
+    },
+    clearValues: (state, action) => {
+      state.pass = "";
+      state.email = "";
+      state.nickName = "";
     }
   },
 });
 
 // export const selectLogin = (state: RootState) => state.loginSlice;
 
-export const { setEmail, setPass, setName } = authSlice.actions;
+export const { setEmail, setPass, setName, clearValues} = authSlice.actions;
 
 export default authSlice.reducer;
