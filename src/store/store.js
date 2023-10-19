@@ -4,6 +4,7 @@ import addNewWordSlice from "./addNewWord/addNewWordSlice";
 import userTagsSlice from "./userTags/userTagsSlice";
 import authSlice from "./auth/authSlice";
 import userSlice from "./user/userSlice";
+import sessionModalSlice from "./sessionModal/sessionModalSlice"
 
 export const store = configureStore({
   reducer: { 
@@ -11,6 +12,7 @@ export const store = configureStore({
     addNewWordSlice,
     userTagsSlice,
     authSlice,
-    userSlice
+    userSlice,
+    sessionModalSlice
   },
 });
