@@ -19,6 +19,11 @@ const Login = () => {
   const  email = useSelector(state => state.authSlice.email);
 
   const onClickLogin = async () => {
+    if(pass.length === 0 || email.length === 0){
+      toast.error("Заполните все поля!");
+      return;
+    }
+
     try{
       const hashPass = md5(pass);
       await axios.post(
